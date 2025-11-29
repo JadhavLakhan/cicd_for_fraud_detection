@@ -5,6 +5,7 @@ import pickle
 import logging
 from datetime import datetime
 import uvicorn
+import os
 
 # ---------------------------------------------
 # Logging Setup
@@ -18,14 +19,18 @@ logging.basicConfig(
 app = FastAPI()
 
 # ---------------------------------------------
-# Load model & encoders (RELATIVE PATHS)
+# Load model & encoders (RELATIVE PATHS FOR DOCKER)
 # ---------------------------------------------
 model = None
 encoders = None
 
 try:
-    model = pickle.load(open("D:\Fraud detection\apps\source\model_xgb.pkl", "rb"))
-    encoders = pickle.load(open("D:\Fraud detection\apps\source\encoders.pkl", "rb"))
+    model_path = os.path.join("source", "model_xgb.pkl")
+    enc_path = os.path.join("source", "encoders.pkl")
+
+    model = pickle.load(open(model_path, "rb"))
+    encoders = pickle.load(open(enc_path, "rb"))
+
     logging.info("Model & encoders loaded successfully")
 except Exception as e:
     logging.error(f"Error loading model/encoders: {e}")
@@ -35,7 +40,6 @@ except Exception as e:
 # ---------------------------------------------
 @app.get("/")
 def home():
-    logging.info("Home page accessed")
     try:
         with open("index.html", "r") as f:
             return HTMLResponse(f.read())
@@ -44,7 +48,7 @@ def home():
         return {"error": "index.html not found"}
 
 # ---------------------------------------------
-# SIMPLE TEST ENDPOINT for CI/tests
+# SIMPLE TEST ENDPOINT
 # ---------------------------------------------
 @app.get("/test")
 def test():
@@ -69,12 +73,11 @@ def predict(
     previous_fraud_history: int,
     merchant_category: str
 ):
+
+    if model is None or encoders is None:
+        return {"error": "Model or encoders not loaded"}
+
     try:
-        logging.info("Prediction request received")
-
-        if model is None or encoders is None:
-            return {"error": "Model or encoders not loaded"}
-
         # Encode categorical values
         t_type = encoders["transaction_type"].transform([transaction_type])[0]
         channel_enc = encoders["channel"].transform([channel])[0]
@@ -106,7 +109,6 @@ def predict(
         pred = model.predict(final)[0]
         result = "Fraud" if pred == 1 else "Not Fraud"
 
-        logging.info(f"Prediction={result}")
         return {"prediction": result}
 
     except Exception as e:
@@ -114,7 +116,7 @@ def predict(
         return {"error": str(e)}
 
 # ---------------------------------------------
-# Uvicorn run (for local dev)
+# LOCAL RUN
 # ---------------------------------------------
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
