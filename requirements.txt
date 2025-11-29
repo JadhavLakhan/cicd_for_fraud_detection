@@ -11,4 +11,5 @@ pytest
 statsmodels
 imblearn
 xgboost
+httpx
 
