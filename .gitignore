@@ -1,0 +1,32 @@
+# Ignore virtual environments
+fraud/
+venv/
+env/
+ENV/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local config
+*.env
+
+# VSCode settings
+.vscode/
+
+# Logs
+*.log
+
+# Compiled code
+*.so
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# System files
+.DS_Store
+
+# Docker
+*.pid

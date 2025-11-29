@@ -1,0 +1,187 @@
+🧾 1. transaction_id
+
+Unique identifier for each transaction
+
+Primary key
+
+Does not contribute directly to fraud detection, but used for tracking
+
+🧾 2. customer_id
+
+Unique ID assigned to each bank customer
+
+Useful for grouping transactions, pattern analysis, customer-level risk
+
+🧾 3. merchant_id
+
+Unique ID of the merchant receiving the payment
+
+Helps detect fraud rings, suspicious merchants, repeat fraud targets
+
+💰 4. amount
+
+The transaction amount (₹50 – ₹50,000)
+
+Large or unusual amounts often carry higher fraud risk
+
+Used for threshold-based risk scoring
+
+⏰ 5. transaction_time
+
+Timestamp when the transaction occurred
+
+Helps detect:
+✔ Time-based anomalies (late night)
+✔ Velocity features
+✔ Fraud bursts (multiple transactions in short time)
+
+🧾 6. transaction_type
+
+Mode of transaction:
+
+UPI
+
+ATM
+
+POS
+
+NetBanking
+
+Each type has different fraud patterns (ex: UPI phishing, card skimming).
+
+🌐 7. channel
+
+Source through which transaction was initiated:
+
+Mobile App
+
+Web
+
+Branch
+
+Card terminal
+
+Different channels have different risk profiles.
+
+📱 8. device_id
+
+Unique ID of customer’s device (mobile, card reader, laptop)
+
+Helps detect:
+✔ Device change
+✔ Device cloning
+✔ High-risk devices
+
+🌍 9. ip_address
+
+IP address used during the transaction
+
+Useful to detect:
+✔ Multiple accounts using same IP
+✔ Sudden IP location changes
+✔ Use of VPNs / suspicious IP blocks
+
+📌 10. geo_location
+
+City of the customer during the transaction
+
+Useful for detecting:
+✔ Location mismatch
+✔ Geography-based anomalies
+✔ Travel fraud
+
+🔁 11. transaction_velocity_1h
+
+Number of transactions made by the customer in the last 1 hour
+
+High values → suspicious behavior
+
+Fraudsters often attempt multiple quick transactions
+
+🔁 12. transaction_velocity_24h
+
+Number of transactions made in the last 24 hours
+
+Helps detect binge spending or account takeover
+
+Higher velocity = higher risk
+
+📊 13. avg_spend_7d
+
+Average amount spent by the customer in the last 7 days
+
+Useful for detecting:
+✔ Sudden large deviations
+✔ Spending spikes
+✔ Outlier transactions
+
+🎯 14. customer_risk_score
+
+Risk score between 0 and 1 (synthetic)
+
+Represents customer’s overall behavior risk
+
+Higher risk score → higher fraud probability
+
+📅 15. account_age_days
+
+Number of days since account was opened
+
+New accounts are riskier (fraudsters create fresh accounts)
+
+💳 16. card_present
+
+1 → Customer used physical card
+
+0 → Card-not-present transaction (UPI, online, etc.)
+
+Card-not-present transactions have higher fraud rates.
+
+🌏 17. international_flag
+
+1 → International transactions
+
+0 → Domestic transactions
+
+International transactions have very high fraud risk
+
+🔁 18. previous_fraud_history
+
+1 → Customer had prior fraud cases
+
+0 → No prior history
+
+One of the strongest predictors of future fraud
+
+🏪 19. merchant_category
+
+Type of merchant:
+
+Grocery
+
+Electronics
+
+Travel
+
+Food
+
+Bills
+
+E-commerce
+
+Others
+
+Certain categories (Travel/E-commerce) have higher fraud exposure.
+
+🔥 20. is_fraud
+
+Target variable (0 = legitimate, 1 = fraud)
+
+Generated using realistic banking rules:
+✔ International transactions
+✔ High velocity
+✔ Large amount
+✔ History of fraud
+✔ High customer risk score
+
+Used for model training and evaluation.
